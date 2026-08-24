@@ -12,6 +12,10 @@ const MONGO_URI = process.env.MONGO_URI;
 
 app.use(cors());
 app.use(express.json());
+import authRoutes from "./routes/auth.js";
+
+
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("Student Task Manager Backend is running!");

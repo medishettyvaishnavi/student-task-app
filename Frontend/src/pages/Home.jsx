@@ -1,10 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import "./App.css";
+import { useNavigate } from "react-router-dom";
 
-function Home() {
+export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="app">
       <nav className="navbar">
@@ -17,9 +15,12 @@ function Home() {
           <a href="#features">Features</a>
           <a href="#about">About</a>
 
-          <a href="/login" className="login-btn">
+          <button
+            className="login-btn"
+            onClick={() => navigate("/login")}
+          >
             Login
-          </a>
+          </button>
         </div>
       </nav>
 
@@ -39,13 +40,23 @@ function Home() {
             </p>
 
             <div className="hero-buttons">
-              <a href="/register" className="primary-btn">
+              <button
+                className="primary-btn"
+                onClick={() => navigate("/register")}
+              >
                 Get Started →
-              </a>
+              </button>
 
-              <a href="#features" className="secondary-btn">
+              <button
+                className="secondary-btn"
+                onClick={() =>
+                  document
+                    .getElementById("features")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
                 Learn More
-              </a>
+              </button>
             </div>
 
             <div className="trust">
@@ -109,9 +120,12 @@ function Home() {
               <span className="priority low">Low</span>
             </div>
 
-            <a href="/login" className="view-tasks">
+            <button
+              className="view-tasks"
+              onClick={() => navigate("/login")}
+            >
               View all tasks →
-            </a>
+            </button>
           </div>
         </section>
 
@@ -175,23 +189,3 @@ function Home() {
     </div>
   );
 }
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/register" element={<Register />} />
-
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
