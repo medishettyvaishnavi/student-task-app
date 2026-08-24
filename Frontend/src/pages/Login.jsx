@@ -6,16 +6,20 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setMessage("");
-    setLoading(true);
+    setIsError(false);
 
     try {
+      setLoading(true);
+
       const response = await fetch(
         "http://localhost:8080/api/auth/login",
         {
@@ -36,21 +40,24 @@ export default function Login() {
         throw new Error(data.message || "Login failed");
       }
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
+      // Save authentication token
+      localStorage.setItem("token", data.token);
 
+      // Save user information if backend sends it
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
       setMessage("Login successful!");
+      setIsError(false);
 
+      // Go to dashboard
       setTimeout(() => {
         navigate("/dashboard");
       }, 500);
     } catch (error) {
-      setMessage(error.message || "Something went wrong");
+      setMessage(error.message);
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -59,12 +66,7 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-logo">
-          <span className="logo-icon">✓</span>
-          StudentTask
-        </div>
-
-        <h1>Welcome back</h1>
+        <h1>Welcome Back</h1>
 
         <p className="subtitle">
           Sign in to manage your tasks
@@ -92,22 +94,20 @@ export default function Login() {
           />
 
           <button type="submit" disabled={loading}>
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {message && (
-          <p className="auth-message">{message}</p>
+          <p className={`auth-message ${isError ? "error" : "success"}`}>
+            {message}
+          </p>
         )}
 
-        <p className="auth-link">
+        <div className="auth-link">
           Don't have an account?{" "}
-          <Link to="/register">Create an account</Link>
-        </p>
-
-        <p className="back-home">
-          <Link to="/">← Back to home</Link>
-        </p>
+          <Link to="/register">Create Account</Link>
+        </div>
       </div>
     </div>
   );

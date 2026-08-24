@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 
 const router = express.Router();
@@ -46,8 +47,11 @@ router.post("/register", async (req, res) => {
   } catch (error) {
     console.error("Registration error:", error);
 
+    const isDbError = mongoose.connection.readyState !== 1;
     res.status(500).json({
-      message: "Server error during registration",
+      message: isDbError 
+        ? "Database connection failed. Please ensure MongoDB is running." 
+        : (error.message || "Server error during registration"),
     });
   }
 });
@@ -105,8 +109,11 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Login error:", error);
 
+    const isDbError = mongoose.connection.readyState !== 1;
     res.status(500).json({
-      message: "Server error during login",
+      message: isDbError 
+        ? "Database connection failed. Please ensure MongoDB is running." 
+        : (error.message || "Server error during login"),
     });
   }
 });

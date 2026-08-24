@@ -10,20 +10,24 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setMessage("");
+    setIsError(false);
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
+      setIsError(true);
       return;
     }
 
     if (password.length < 6) {
       setMessage("Password must be at least 6 characters.");
+      setIsError(true);
       return;
     }
 
@@ -52,6 +56,7 @@ export default function Register() {
       }
 
       setMessage("Registration successful! Redirecting to login...");
+      setIsError(false);
 
       setName("");
       setEmail("");
@@ -63,6 +68,7 @@ export default function Register() {
       }, 1500);
     } catch (error) {
       setMessage(error.message);
+      setIsError(true);
     } finally {
       setLoading(false);
     }
@@ -123,7 +129,11 @@ export default function Register() {
           </button>
         </form>
 
-        {message && <p>{message}</p>}
+        {message && (
+          <p className={`auth-message ${isError ? "error" : "success"}`}>
+            {message}
+          </p>
+        )}
 
         <div className="auth-link">
           Already have an account?{" "}
