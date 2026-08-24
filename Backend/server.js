@@ -1,26 +1,31 @@
-import exp from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const app = exp();
-const port = process.env.PORT || 8080;
+const app = express();
 
-app.use(exp.json());
+const PORT = process.env.PORT || 8080;
+const MONGO_URI = process.env.MONGO_URI;
 
-app.get('/', (req, res) => {
-    res.send('Student Task Manager Backend is running!');
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.send("Student Task Manager Backend is running!");
 });
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+    .connect(MONGO_URI)
     .then(() => {
-        console.log('MongoDB connected successfully');
+        console.log("MongoDB connected successfully");
 
-        app.listen(port, () => {
-            console.log(`Server running on http://localhost:${port}`);
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
         });
     })
-    .catch((err) => {
-        console.log('MongoDB connection failed:', err);
+    .catch((error) => {
+        console.error("MongoDB connection failed:", error);
     });
